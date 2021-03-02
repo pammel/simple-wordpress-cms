@@ -1,0 +1,21 @@
+{
+    "name": "pammel/simple-wordpress-cms",
+    "description": "Use wordpress as CMS and include generated pages in existing PHP project, e.g. laravel or symfony",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Peter Ammel",
+            "email": "peter@ammel.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.3.0",
+        "symfony/dom-crawler": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "pammel\\SimpleWordpressCms\\": "src/"
+        }
+    }
+}
