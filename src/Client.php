@@ -24,9 +24,14 @@ class Client
 
         # get HTML
         $body = '[404] Page not exists';
-        $content = json_decode(file_get_contents($this->config->getBlogUrl() . '/wp-json/wp/v2/pages/?slug='.$slug), true);
-        if(isset($content[0]['content']['rendered'])){
-            $body = $content[0]['content']['rendered'];
+        try{
+            $content = json_decode(file_get_contents($this->config->getBlogUrl() . '/wp-json/wp/v2/pages/?slug='.$slug), true);
+            if(isset($content[0]['content']['rendered'])){
+                $body = $content[0]['content']['rendered'];
+            }
+        }
+        catch(\Throwable $e){
+            $body = sprintf('[%d] %s', $e->getCode(), $e->getMessage());
         }
 
         return (new Page($this->config))
@@ -34,5 +39,4 @@ class Client
            ->setBody($body)
            ;
     }
-
 }
