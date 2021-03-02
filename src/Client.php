@@ -7,11 +7,11 @@ use Symfony\Component\DomCrawler\Crawler;
 class Client
 {
     /**
-     * @var ClientConfig
+     * @var Config
      */
     private $config;
 
-    public function __construct(ClientConfig $config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
     }
@@ -29,7 +29,7 @@ class Client
             $body = $content[0]['content']['rendered'];
         }
 
-        return (new Page())
+        return (new Page($this->config))
            ->setCssFiles($cssFiles)
            ->setBody($body)
            ;
