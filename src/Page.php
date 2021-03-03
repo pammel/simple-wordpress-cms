@@ -108,7 +108,7 @@ class Page
 
     public function getCssMergedFileUrl(): string
     {
-        return $this->config->getCssFolderUrl() . '/' . $this->getCssMergedFilenameWithHash();
+        return $this->config->getCssFolderPublicUrl() . '/' . $this->getCssMergedFilenameWithHash();
     }
 
     private function getCssMergedFilenameWithHash(): string

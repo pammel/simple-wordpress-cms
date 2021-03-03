@@ -17,7 +17,7 @@ class Config
     /**
      * @var string
      */
-    private $cssMergedFilename;
+    private $cssMergedFilename = 'simple-wordpress-cms.css';
 
     /**
      * @var string
@@ -27,7 +27,7 @@ class Config
     /**
      * @var string
      */
-    private $cssFolderUrl;
+    private $cssFolderPublicUrl;
 
     /**
      * @var array
@@ -114,18 +114,18 @@ class Config
     /**
      * @return string
      */
-    public function getCssFolderUrl(): string
+    public function getCssFolderPublicUrl(): string
     {
-        return $this->cssFolderUrl;
+        return $this->cssFolderPublicUrl;
     }
 
     /**
-     * @param string $cssFolderUrl
+     * @param string $cssFolderPublicUrl
      * @return Config
      */
-    public function setCssFolderUrl(string $cssFolderUrl): Config
+    public function setCssFolderPublicUrl(string $cssFolderPublicUrl): Config
     {
-        $this->cssFolderUrl = $cssFolderUrl;
+        $this->cssFolderPublicUrl = $cssFolderPublicUrl;
         return $this;
     }
 
