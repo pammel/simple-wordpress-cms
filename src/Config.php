@@ -17,27 +17,27 @@ class Config
     /**
      * @var string
      */
-    private $cssUrlPath;
+    private $cssMergedFilename;
 
     /**
      * @var string
      */
-    private $cssFilePath;
+    private $cssFolderLocal;
 
     /**
      * @var string
      */
-    private $cssMergeFolder = 'wp-merged';
-
-    /**
-     * @var int
-     */
-    private $cssMergeFolderPermissions = 0775;
+    private $cssFolderUrl;
 
     /**
      * @var array
      */
-    private $cssStringReplace = [':root' => ''];
+    private $cssReplace = [':root' => ''];
+
+    /**
+     * @var array
+     */
+    private $contentReplace = [];
 
     /**
      * @return string
@@ -78,76 +78,54 @@ class Config
     /**
      * @return string
      */
-    public function getCssUrlPath(): string
+    public function getCssMergedFilename(): string
     {
-        return $this->cssUrlPath;
+        return $this->cssMergedFilename;
     }
 
     /**
-     * @param string $cssUrlPath
+     * @param string $cssMergedFilename
      * @return Config
      */
-    public function setCssUrlPath(string $cssUrlPath): Config
+    public function setCssMergedFilename(string $cssMergedFilename): Config
     {
-        $this->cssUrlPath = $cssUrlPath;
+        $this->cssMergedFilename = $cssMergedFilename;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getCssFilePath(): string
+    public function getCssFolderLocal(): string
     {
-        return $this->cssFilePath;
+        return $this->cssFolderLocal;
     }
 
     /**
-     * @param string $cssFilePath
+     * @param string $cssFolderLocal
      * @return Config
      */
-    public function setCssFilePath(string $cssFilePath): Config
+    public function setCssFolderLocal(string $cssFolderLocal): Config
     {
-        $this->cssFilePath = $cssFilePath;
+        $this->cssFolderLocal = $cssFolderLocal;
         return $this;
     }
 
     /**
-     * default = 'wp-merged'
-     *
      * @return string
      */
-    public function getCssMergeFolder(): string
+    public function getCssFolderUrl(): string
     {
-        return $this->cssMergeFolder;
+        return $this->cssFolderUrl;
     }
 
     /**
-     * @param string $cssMergeFolder
+     * @param string $cssFolderUrl
      * @return Config
      */
-    public function setCssMergeFolder(string $cssMergeFolder): Config
+    public function setCssFolderUrl(string $cssFolderUrl): Config
     {
-        $this->cssMergeFolder = $cssMergeFolder;
-        return $this;
-    }
-
-    /**
-     * default = 0775
-     *
-     * @return int
-     */
-    public function getCssMergeFolderPermissions(): int
-    {
-        return $this->cssMergeFolderPermissions;
-    }
-
-    /**
-     * @param int $cssMergeFolderPermissions
-     * @return Config
-     */
-    public function setCssMergeFolderPermissions(int $cssMergeFolderPermissions): Config
-    {
-        $this->cssMergeFolderPermissions = $cssMergeFolderPermissions;
+        $this->cssFolderUrl = $cssFolderUrl;
         return $this;
     }
 
@@ -156,20 +134,36 @@ class Config
      *
      * @return array
      */
-    public function getCssStringReplace(): array
+    public function getCssReplace(): array
     {
-        return $this->cssStringReplace;
+        return $this->cssReplace;
     }
 
     /**
-     * @param array $cssStringReplace
+     * @param array $cssReplace
      * @return Config
      */
-    public function setCssStringReplace(array $cssStringReplace): Config
+    public function setCssReplace(array $cssReplace): Config
     {
-        $this->cssStringReplace = $cssStringReplace;
+        $this->cssReplace = $cssReplace;
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getContentReplace(): array
+    {
+        return $this->contentReplace;
+    }
 
+    /**
+     * @param array $contentReplace
+     * @return Config
+     */
+    public function setContentReplace(array $contentReplace): Config
+    {
+        $this->contentReplace = $contentReplace;
+        return $this;
+    }
 }

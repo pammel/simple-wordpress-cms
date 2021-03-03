@@ -6,6 +6,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class Client
 {
+    const NAME = 'Simple-Wordpress-CMS';
+
     /**
      * @var Config
      */
@@ -18,25 +20,42 @@ class Client
 
     public function getPage(string $slug): Page
     {
+        $error = [];
+
         # get CSS
-        $crawler = new Crawler(file_get_contents($this->config->getBlogUrl() . '/' . $slug));
-        $cssFiles = $crawler->filter('head link[rel=stylesheet]')->extract(['href']);
+        $cssFiles = [];
+        try{
+            $crawler = new Crawler(file_get_contents($this->config->getBlogUrl() . '/' . $slug));
+            $cssFiles = $crawler->filter('head link[rel=stylesheet]')->extract(['href']);
+        }
+        catch(\Throwable $e){
+            $error[] = sprintf('%s error getting CSS-files<br>[%d] %s', self::NAME, $e->getCode(), $e->getMessage());
+        }
 
         # get HTML
-        $body = '[404] Page not exists';
+        $content = '';
         try{
-            $content = json_decode(file_get_contents($this->config->getBlogUrl() . '/wp-json/wp/v2/pages/?slug='.$slug), true);
-            if(isset($content[0]['content']['rendered'])){
-                $body = $content[0]['content']['rendered'];
+            $data = json_decode(file_get_contents($this->config->getBlogUrl() . '/wp-json/wp/v2/pages/?slug='.$slug), true);
+            if(isset($data[0]['content']['rendered'])){
+                $content = $data[0]['content']['rendered'];
+            }
+
+            if ($strReplace = $this->config->getContentReplace()) {
+                $content = str_replace(array_keys($strReplace), array_values($strReplace), $content);
             }
         }
         catch(\Throwable $e){
-            $body = sprintf('[%d] %s', $e->getCode(), $e->getMessage());
+            $error[] = sprintf('%s error getting content<br>[%d] %s', self::NAME, $e->getCode(), $e->getMessage());
+        }
+
+        # Set Error
+        if($error){
+            $content .= implode('<br>', $error);
         }
 
         return (new Page($this->config))
-           ->setCssFiles($cssFiles)
-           ->setBody($body)
+           ->setWpCssFiles($cssFiles)
+           ->setWpContent($content)
            ;
     }
 }

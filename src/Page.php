@@ -10,19 +10,24 @@ class Page
     private $config;
 
     /**
+     * @var string
+     */
+    private $wpContent;
+
+    /**
      * @var array
      */
-    private $cssFiles = [];
+    private $wpCssFiles = [];
 
     /**
      * @var string
      */
-    private $cssFileMerged;
+    private $cssMergeHash;
 
     /**
      * @var string
      */
-    private $body;
+    private $cssMergedFilenameWithHash;
 
     public function __construct(Config $config)
     {
@@ -35,11 +40,9 @@ class Page
     public function getHtml()
     {
         return '    
-            <div class="wordpress-container" style="margin-top: -1.5rem">
-                <div id="wpShadow"></div>
-                <div id="wpShadowContent">
-                    '.$this->getBody().'
-                </div>
+            <div id="wpShadow"></div>
+            <div id="wpShadowContent">
+                '.$this->getWpContent().'
             </div>
         
             <script>
@@ -52,99 +55,116 @@ class Page
                 var el = document.createElement("link");
                 el.setAttribute("rel", "stylesheet");
                 el.setAttribute("type", "text/css");
-                el.setAttribute("href", "' . $this->getCssFileMerged() . '");
+                el.setAttribute("href", "' . $this->getCssMergedFileUrl() . '");
                 shadow.shadowRoot.append(el);
             </script>
         ';
     }
 
-    /**
-     * return URL of merged CSS file
-     *
-     * @return string
-     */
-    public function getCssFileMerged(): string
+    private function mergeCssFiles()
     {
-        if($this->cssFileMerged === null){
-            $mergeFolder = $this->config->getCssFilePath() . '/' . $this->config->getCssMergeFolder();
-            $fileName = md5(serialize($this->getCssFiles())) . '.css';
-            $filePath = $mergeFolder . '/' . $fileName;
-            $this->cssFileMerged = $this->config->getCssUrlPath() . '/' . $this->config->getCssMergeFolder() . '/' . $fileName;
+        if(!file_exists($this->getCssMergedFileLocal())) {
 
-            if(!file_exists($filePath)) {
+            # Clean up old files
+            $files = glob($this->config->getCssFolderLocal() . '/' . explode('.', $this->getCssMergedFilenameWithHash())[0] . '*');
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                }
+            }
 
-                # make dir
-                if (!is_dir($mergeFolder)) {
-                    mkdir($mergeFolder, $this->config->getCssMergeFolderPermissions(), true);
+            # merge css files
+            $cssMerged = '';
+            foreach ($this->getWpCssFiles(true) as $file) {
+                $css = file_get_contents($file);
+                if ($strReplace = $this->config->getCssReplace()) {
+                    $css = str_replace(array_keys($strReplace), array_values($strReplace), $css);
                 }
 
-                # Clean up old files
-                $files = glob($mergeFolder . '/*');
-                foreach ($files as $file) {
-                    if (is_file($file)) {
-                        unlink($file);
-                    }
-                }
+                $cssMerged .=
+                   "/* " . str_repeat('-', 80) . " */ \n" .
+                   "/* " . basename($file) . "*/ \n" .
+                   "/* " . str_repeat('-', 80) . " */ \n" .
+                   $css . "\n\n";
+            }
+            file_put_contents($this->getCssMergedFileLocal(), trim($cssMerged));
+        }
+    }
 
-                # merge css files
-                $cssMerged = '';
-                foreach ($this->getCssFiles() as $file) {
-                    $css = file_get_contents($file);
-                    if ($strReplace = $this->config->getCssStringReplace()) {
-                        $css = str_replace(array_keys($strReplace), array_values($strReplace), $css);
-                    }
+    private function getCssMergeHash(): string
+    {
+        if($this->cssMergeHash === null){
+            $this->cssMergeHash = md5(serialize($this->getWpCssFiles(true)));
+            $this->mergeCssFiles();
+        }
 
-                    $cssMerged .=
-                       "/* " . str_repeat('-', 80) . " */ \n" .
-                       "/* " . $file . "*/ \n" .
-                       "/* " . str_repeat('-', 80) . " */ \n" .
-                       $css . "\n\n";
-                }
-                file_put_contents($filePath, trim($cssMerged));
+        return $this->cssMergeHash;
+    }
+
+    public function getCssMergedFileLocal(): string
+    {
+        return $this->config->getCssFolderLocal() . '/' . $this->getCssMergedFilenameWithHash();
+    }
+
+    public function getCssMergedFileUrl(): string
+    {
+        return $this->config->getCssFolderUrl() . '/' . $this->getCssMergedFilenameWithHash();
+    }
+
+    private function getCssMergedFilenameWithHash(): string
+    {
+        if($this->cssMergedFilenameWithHash === null){
+            if(strpos($this->config->getCssMergedFilename(), '.') !== false){
+                $parts = explode('.', $this->config->getCssMergedFilename());
+                array_splice( $parts, count($parts)-1, 0, $this->getCssMergeHash() );
+                $this->cssMergedFilenameWithHash = implode('.', $parts);
+            }
+            else{
+                $this->cssMergedFilenameWithHash = $this->config->getCssMergedFilename() . '.' . $this->getCssMergeHash();
             }
         }
 
-        return $this->cssFileMerged;
+        return $this->cssMergedFilenameWithHash;
     }
 
     /**
      * @param bool $includeAdditional
      * @return array
      */
-    public function getCssFiles($includeAdditional=true): array
+    public function getWpCssFiles($includeAdditional=true): array
     {
         if($includeAdditional){
-            return array_merge($this->cssFiles, $this->config->getCssFilesAdditional());
+            return array_merge($this->wpCssFiles, $this->config->getCssFilesAdditional());
         }
 
-        return $this->cssFiles;
+        return $this->wpCssFiles;
     }
 
     /**
-     * @param array $cssFiles
+     * @param array $wpCssFiles
      * @return Page
      */
-    public function setCssFiles(array $cssFiles): Page
+    public function setWpCssFiles(array $wpCssFiles): Page
     {
-        $this->cssFiles = $cssFiles;
+        $this->wpCssFiles = $wpCssFiles;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getBody(): string
+    public function getWpContent(): string
     {
-        return $this->body;
+        return $this->wpContent;
     }
 
     /**
-     * @param string $body
+     * @param string $wpContent
      * @return Page
      */
-    public function setBody(string $body): Page
+    public function setWpContent(string $wpContent): Page
     {
-        $this->body = $body;
+        $this->wpContent = $wpContent;
         return $this;
     }
 }
