@@ -8,7 +8,7 @@ You have an existing PHP project and want to use Wordpress as CMS for specific p
 This is the concept of Simple-Wordpress-CMS:
 - It takes content and design from the wordpress page and embeds it into your PHP site.
 - The design of your existing site remains unaffected (e.g. header and footer). This is achieved by encapsulating CSS with Shadow DOM.
-- Links and URLs are fixed automatically. Except images URLs, these remain the same, because images are stored on the Wordpress server.
+- Links and URLs are fixed automatically. (SEO) meta tags also. Except image URLs, these remain the same, because images are stored on the Wordpress server.
 - It does not matter where Wordpress is installed, it can be any external server with different URL.
 
 ## Installation
