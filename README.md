@@ -24,6 +24,8 @@ $ composer require pammel/simple-wordpress-cms
 Use this code to embed the Wordpress page into your PHP project:
 
 ```php
+<?php
+
 use pammel\SimpleWordpressCms\Config;
 use pammel\SimpleWordpressCms\Client;
 
@@ -66,6 +68,8 @@ For more functionality look inside the two main classes
 It is highly recommended to cache the page object because parsing the WordPress page takes a few seconds. This is an example using Laravel:
 
 ```php
+<?php
+
 use Illuminate\Support\Facades\Cache;
 use pammel\SimpleWordpressCms\Client;
 use pammel\SimpleWordpressCms\Config;
