@@ -56,7 +56,7 @@ class Config
     /**
      * @var array
      */
-    private $htmlHeaderPregReplace = [];
+    private $htmlHeadPregReplace = [];
 
     /**
      * @var string
@@ -85,7 +85,7 @@ class Config
     /**
      * @var string
      */
-    private $htmlHeaderSelector = 'title, meta[name=description], meta[property^=og], meta[name^=twitter], script[class=yoast-schema-graph]';
+    private $htmlHeadSelector = 'title, meta[name=description], meta[property^=og], meta[name^=twitter], script[class=yoast-schema-graph]';
 
     public function getWordpressUrl(): string
     {
@@ -186,14 +186,14 @@ class Config
         return $this;
     }
 
-    public function getHtmlHeaderPregReplace(): array
+    public function getHtmlHeadPregReplace(): array
     {
-        return $this->htmlHeaderPregReplace;
+        return $this->htmlHeadPregReplace;
     }
 
-    public function setHtmlHeaderPregReplace(array $htmlHeaderPregReplace): Config
+    public function setHtmlHeadPregReplace(array $htmlHeadPregReplace): Config
     {
-        $this->htmlHeaderPregReplace = $htmlHeaderPregReplace;
+        $this->htmlHeadPregReplace = $htmlHeadPregReplace;
         return $this;
     }
 
@@ -208,14 +208,14 @@ class Config
         return $this;
     }
 
-    public function getHtmlHeaderSelector(): string
+    public function getHtmlHeadSelector(): string
     {
-        return $this->htmlHeaderSelector;
+        return $this->htmlHeadSelector;
     }
 
-    public function setHtmlHeaderSelector(string $htmlHeaderSelector): Config
+    public function setHtmlHeadSelector(string $htmlHeadSelector): Config
     {
-        $this->htmlHeaderSelector = $htmlHeaderSelector;
+        $this->htmlHeadSelector = $htmlHeadSelector;
         return $this;
     }
 

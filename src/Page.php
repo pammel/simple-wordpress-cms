@@ -44,17 +44,17 @@ class Page
     /**
      * @var ?Crawler
      */
-    private $wpHeaderMeta;
+    private $wpHeadMeta;
 
     /**
      * @var string
      */
-    private $bodyHtml;
+    private $htmlBody;
 
     /**
      * @var string
      */
-    private $headerHtml;
+    private $htmlHead;
 
     /**
      * @var string
@@ -107,7 +107,7 @@ class Page
     public function preprocess(): Page
     {
         $this->getHtmlBody();
-        $this->getHtmlHeader();
+        $this->getHtmlHead();
         $this->getTitle();
         $this->getDescription();
         $this->getCanonical();
@@ -177,7 +177,7 @@ class Page
 
     public function getHtmlBody(): string
     {
-        if ($this->bodyHtml === null) {
+        if ($this->htmlBody === null) {
             $html = $this->getWpContent();
 
             if($this->config->isAutoConvertWordpressUrlIntoProjectUrl()){
@@ -188,34 +188,34 @@ class Page
                 $html = $this->pregReplace($html, $pregReplace);
             }
 
-            $this->bodyHtml = str_replace(['<%wpContent%>', '<%cssMergedFile%>'], [$html, $this->getCssMergedFileUrl()], $this->config->getHtmlBodyTemplate());
+            $this->htmlBody = str_replace(['<%wpContent%>', '<%cssMergedFile%>'], [$html, $this->getCssMergedFileUrl()], $this->config->getHtmlBodyTemplate());
         }
 
-        return $this->bodyHtml;
+        return $this->htmlBody;
     }
 
-    public function getHtmlHeader()
+    public function getHtmlHead()
     {
-        if ($this->headerHtml === null) {
+        if ($this->htmlHead === null) {
             $html = [];
-            if($this->getWpHeaderMeta()){
-                $html = $this->getWpHeaderMeta()->each(function(Crawler $node, $i){
+            if($this->getWpHeadMeta()){
+                $html = $this->getWpHeadMeta()->each(function(Crawler $node, $i){
                     return $node->outerHtml();
                 });
             }
 
-            $this->headerHtml = implode("\n", $html);
+            $this->htmlHead = implode("\n", $html);
 
             if($this->config->isAutoConvertWordpressUrlIntoProjectUrl()){
-                $this->headerHtml = $this->convertWordpressUrlIntoProjectUrl($this->headerHtml);
+                $this->htmlHead = $this->convertWordpressUrlIntoProjectUrl($this->htmlHead);
             }
 
-            if ($pregReplace = $this->config->getHtmlHeaderPregReplace()) {
-                $this->headerHtml = $this->pregReplace($this->headerHtml, $pregReplace);
+            if ($pregReplace = $this->config->getHtmlHeadPregReplace()) {
+                $this->htmlHead = $this->pregReplace($this->htmlHead, $pregReplace);
             }
         }
 
-        return $this->headerHtml;
+        return $this->htmlHead;
     }
 
         /**
@@ -236,18 +236,18 @@ class Page
         return $this->wpContent;
     }
 
-    public function getWpHeaderMeta(): ?Crawler
+    public function getWpHeadMeta(): ?Crawler
     {
-        if(!$this->wpHeaderMeta){
-            if($this->crawler && $this->config->getHtmlHeaderSelector()){
-                $this->wpHeaderMeta = $this->crawler->filter($this->config->getHtmlHeaderSelector());
+        if(!$this->wpHeadMeta){
+            if($this->crawler && $this->config->getHtmlHeadSelector()){
+                $this->wpHeadMeta = $this->crawler->filter($this->config->getHtmlHeadSelector());
             }
             else{
-                $this->wpHeaderMeta = null;
+                $this->wpHeadMeta = null;
             }
         }
 
-        return $this->wpHeaderMeta;
+        return $this->wpHeadMeta;
     }
 
     /**
