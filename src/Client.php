@@ -22,40 +22,26 @@ class Client
     {
         $error = [];
 
-        # get CSS
-        $cssFiles = [];
         try{
-            $crawler = new Crawler(file_get_contents($this->config->getBlogUrl() . '/' . $slug));
-            $cssFiles = $crawler->filter('head link[rel=stylesheet]')->extract(['href']);
+            $crawler = new Crawler(file_get_contents($this->config->getWordpressUrl() . '/' . $slug));
         }
         catch(\Throwable $e){
+            $crawler = null;
             $error[] = sprintf('%s error getting CSS-files<br>[%d] %s', self::NAME, $e->getCode(), $e->getMessage());
         }
 
-        # get HTML
-        $content = '';
         try{
-            $data = json_decode(file_get_contents($this->config->getBlogUrl() . '/wp-json/wp/v2/pages/?slug='.$slug), true);
-            if(isset($data[0]['content']['rendered'])){
-                $content = $data[0]['content']['rendered'];
-            }
-
-            if ($strReplace = $this->config->getContentReplace()) {
-                $content = str_replace(array_keys($strReplace), array_values($strReplace), $content);
-            }
+            $apiResult = json_decode(file_get_contents($this->config->getWordpressUrl() . '/wp-json/wp/v2/pages/?slug='.$slug), true);
         }
         catch(\Throwable $e){
+            $apiResult = null;
             $error[] = sprintf('%s error getting content<br>[%d] %s', self::NAME, $e->getCode(), $e->getMessage());
         }
 
-        # Set Error
-        if($error){
-            $content .= implode('<br>', $error);
-        }
-
         return (new Page($this->config))
-           ->setWpCssFiles($cssFiles)
-           ->setWpContent($content)
+           ->setCrawler($crawler)
+           ->setApiResult($apiResult)
+           ->setError($error)
            ;
     }
 }

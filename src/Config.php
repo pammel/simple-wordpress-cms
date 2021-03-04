@@ -7,7 +7,19 @@ class Config
     /**
      * @var string
      */
-    private $blogUrl;
+    private $wordpressUrl;
+
+    /**
+     * @var string
+     */
+    private $projectUrl;
+
+    /**
+     * If true, all Wordpress-URLs in headerHtml and bodyHtml are replaced by project-URL. Except images-URLs, these remain the same, because they are stored on the Wordpress server.
+     *
+     * @var bool
+     */
+    private $autoConvertWordpressUrlIntoProjectUrl = true;
 
     /**
      * @var array
@@ -17,7 +29,7 @@ class Config
     /**
      * @var string
      */
-    private $cssMergedFilename = 'simple-wordpress-cms.css';
+    private $cssMergedFilename = 'wp-merged.css';
 
     /**
      * @var string
@@ -30,140 +42,181 @@ class Config
     private $cssFolderPublicUrl;
 
     /**
+     * default = [':root' => ''] because :root don't work in shadowRoot
+     *
      * @var array
      */
-    private $cssReplace = [':root' => ''];
+    private $cssPregReplace = ['/:root/' => ''];
 
     /**
      * @var array
      */
-    private $contentReplace = [];
+    private $htmlBodyPregReplace = [];
 
     /**
-     * @return string
+     * @var array
      */
-    public function getBlogUrl()
+    private $htmlHeaderPregReplace = [];
+
+    /**
+     * @var string
+     */
+    private $htmlBodyTemplate = '    
+        <div id="wpShadow"></div>
+        <div id="wpShadowContent">
+            <%wpContent%>
+        </div>
+    
+        <script>
+            let shadowContent = document.querySelector("#wpShadowContent");
+    
+            let shadow = document.querySelector("#wpShadow");
+            shadow.attachShadow({mode: "open", delegatesFocus: false});
+            shadow.shadowRoot.append(shadowContent);
+    
+            let el = document.createElement("link");
+            el.setAttribute("rel", "stylesheet");
+            el.setAttribute("type", "text/css");
+            el.setAttribute("href", "<%cssMergedFile%>");
+            shadow.shadowRoot.append(el);
+        </script>
+    ';
+
+    /**
+     * @var string
+     */
+    private $htmlHeaderSelector = 'title, meta[name=description], meta[property^=og], meta[name^=twitter], script[class=yoast-schema-graph]';
+
+    public function getWordpressUrl(): string
     {
-        return $this->blogUrl;
+        return $this->wordpressUrl;
     }
 
-    /**
-     * @param string $blogUrl
-     * @return Config
-     */
-    public function setBlogUrl($blogUrl)
+    public function setWordpressUrl(string $wordpressUrl): Config
     {
-        $this->blogUrl = $blogUrl;
+        $this->wordpressUrl = $wordpressUrl;
         return $this;
     }
 
-    /**
-     * @return array
-     */
+    public function getProjectUrl(): string
+    {
+        return $this->projectUrl;
+    }
+
+    public function setProjectUrl(string $projectUrl): Config
+    {
+        $this->projectUrl = $projectUrl;
+        return $this;
+    }
+
+    public function isAutoConvertWordpressUrlIntoProjectUrl(): bool
+    {
+        return $this->autoConvertWordpressUrlIntoProjectUrl;
+    }
+
+    public function setAutoConvertWordpressUrlIntoProjectUrl(bool $autoConvertWordpressUrlIntoProjectUrl): Config
+    {
+        $this->autoConvertWordpressUrlIntoProjectUrl = $autoConvertWordpressUrlIntoProjectUrl;
+        return $this;
+    }
+
     public function getCssFilesAdditional(): array
     {
         return $this->cssFilesAdditional;
     }
 
-    /**
-     * @param array $cssFilesAdditional
-     * @return Config
-     */
     public function setCssFilesAdditional(array $cssFilesAdditional): Config
     {
         $this->cssFilesAdditional = $cssFilesAdditional;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCssMergedFilename(): string
     {
         return $this->cssMergedFilename;
     }
 
-    /**
-     * @param string $cssMergedFilename
-     * @return Config
-     */
     public function setCssMergedFilename(string $cssMergedFilename): Config
     {
         $this->cssMergedFilename = $cssMergedFilename;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCssFolderLocal(): string
     {
         return $this->cssFolderLocal;
     }
 
-    /**
-     * @param string $cssFolderLocal
-     * @return Config
-     */
     public function setCssFolderLocal(string $cssFolderLocal): Config
     {
         $this->cssFolderLocal = $cssFolderLocal;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCssFolderPublicUrl(): string
     {
         return $this->cssFolderPublicUrl;
     }
 
-    /**
-     * @param string $cssFolderPublicUrl
-     * @return Config
-     */
     public function setCssFolderPublicUrl(string $cssFolderPublicUrl): Config
     {
         $this->cssFolderPublicUrl = $cssFolderPublicUrl;
         return $this;
     }
 
-    /**
-     * default = [':root' => ''] because :root don't work in shadowRoot
-     *
-     * @return array
-     */
-    public function getCssReplace(): array
+    public function getCssPregReplace(): array
     {
-        return $this->cssReplace;
+        return $this->cssPregReplace;
     }
 
-    /**
-     * @param array $cssReplace
-     * @return Config
-     */
-    public function setCssReplace(array $cssReplace): Config
+    public function setCssPregReplace(array $cssPregReplace): Config
     {
-        $this->cssReplace = $cssReplace;
+        $this->cssPregReplace = $cssPregReplace;
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getContentReplace(): array
+    public function getHtmlBodyPregReplace(): array
     {
-        return $this->contentReplace;
+        return $this->htmlBodyPregReplace;
     }
 
-    /**
-     * @param array $contentReplace
-     * @return Config
-     */
-    public function setContentReplace(array $contentReplace): Config
+    public function setHtmlBodyPregReplace(array $htmlBodyPregReplace): Config
     {
-        $this->contentReplace = $contentReplace;
+        $this->htmlBodyPregReplace = $htmlBodyPregReplace;
         return $this;
     }
+
+    public function getHtmlHeaderPregReplace(): array
+    {
+        return $this->htmlHeaderPregReplace;
+    }
+
+    public function setHtmlHeaderPregReplace(array $htmlHeaderPregReplace): Config
+    {
+        $this->htmlHeaderPregReplace = $htmlHeaderPregReplace;
+        return $this;
+    }
+
+    public function getHtmlBodyTemplate(): string
+    {
+        return $this->htmlBodyTemplate;
+    }
+
+    public function setHtmlBodyTemplate(string $htmlBodyTemplate): Config
+    {
+        $this->htmlBodyTemplate = $htmlBodyTemplate;
+        return $this;
+    }
+
+    public function getHtmlHeaderSelector(): string
+    {
+        return $this->htmlHeaderSelector;
+    }
+
+    public function setHtmlHeaderSelector(string $htmlHeaderSelector): Config
+    {
+        $this->htmlHeaderSelector = $htmlHeaderSelector;
+        return $this;
+    }
+
 }
