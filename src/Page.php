@@ -194,7 +194,7 @@ class Page
         return $this->htmlBody;
     }
 
-    public function getHtmlHead()
+    public function getHtmlHead(): string
     {
         if ($this->htmlHead === null) {
             $html = [];

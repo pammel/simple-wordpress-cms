@@ -1,6 +1,6 @@
 {
     "name": "pammel/simple-wordpress-cms",
-    "description": "Use wordpress as CMS and include generated pages in existing PHP project, e.g. laravel or symfony",
+    "description": "Use wordpress as CMS and embed generated pages in existing PHP project, e.g. laravel or symfony",
     "license": "MIT",
     "authors": [
         {

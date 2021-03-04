@@ -1,10 +1,15 @@
 # Simple-Wordpress-CMS
 
-## Use case
-You have an existing PHP project and want to use Wordpress as a CMS for specific pages. Wordpress can run on any external server. Embed the pages created with Wordpress into your PHP project. Simple-Wordpress-CMS performs the following tasks:
+![alt sketch](sketch.png)
 
-- Wordpress CSS files are automatically taken over. But the design of your existing site (e.g. header and footer) will remain unaffected. This is achieved by encapsulating CSS with Shadow DOM.
+## Use case
+You have an existing PHP project and want to use Wordpress as CMS for specific pages. You only need the page content of the wordpress site, because header, footer, navigation etc. already exists on your site.
+
+This is the concept of Simple-Wordpress-CMS:
+- It takes content and design from the wordpress page and embeds it into your PHP site.
+- The design of your existing site remains unaffected (e.g. header and footer). This is achieved by encapsulating CSS with Shadow DOM.
 - Links and URLs are fixed automatically. Except images URLs, these remain the same, because images are stored on the Wordpress server.
+- It does not matter where Wordpress is installed, it can be any external server with different URL.
 
 ## Installation
 
