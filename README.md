@@ -36,26 +36,31 @@ $config = (new Config())
     ->setCssFolderPublicUrl('/css')
 ;
 
- $page = (new Client($config))->getPage('my-first-page');  
+$page = (new Client($config))->getPage('my-first-page');  
 ?>
 
 <html>
- <head>
+  <head>
     <!-- 
-       Here is your existing html-head, which probably already has some head-tags in it. 
+      Your existing html-head, which probably already has some head-tags in it. For example:
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     -->
     
     <? echo $page->getHtmlHead() ?>
- </head>
+  </head>
  
- <body>
-  <!-- 
-     This is your existing html-body. There is probably a header and footer and more. 
-  -->
+  <body>
+    <header>
+      <!-- Your existing header and navigation -->
+    </header>
   
-  <?php echo $page->getHtmlBody() ?>
+    <?php echo $page->getHtmlBody() ?>
 
- </body>
+    <footer>
+      <!-- Your existing footer -->
+    </footer>
+  </body>
 </html>
 ```
 
