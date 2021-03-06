@@ -361,9 +361,9 @@ class Page
         $preserveImgUrl = str_replace('://', '::////', $wordpressUrl);
 
         return [
-           '~'.$this->escapeRegexUrl($wordpressUrl).'(?=[a-zA-Z0-9\/\._-]{1,}\.(jpe?g|gif|png))~sim' => $preserveImgUrl,
-           '~'.$this->escapeRegexUrl($wordpressUrl).'(?=[a-zA-Z0-9\/\._-]{1,})~sim' => $projectUrl,
-           '~'.$this->escapeRegexUrl($preserveImgUrl).'(?=[a-zA-Z0-9\/\._-]{1,}\.(jpe?g|gif|png))~sim' => $wordpressUrl,
+           '~'.$this->escapeRegexUrl($wordpressUrl).'(?=[\p{L}0-9\/\._-]{1,}\.(jpe?g|gif|png))~sim' => $preserveImgUrl,
+           '~'.$this->escapeRegexUrl($wordpressUrl).'(?=[\p{L}0-9\/\._-]{1,})~sim' => $projectUrl,
+           '~'.$this->escapeRegexUrl($preserveImgUrl).'(?=[\p{L}0-9\/\._-]{1,}\.(jpe?g|gif|png))~sim' => $wordpressUrl,
         ];
     }
 
