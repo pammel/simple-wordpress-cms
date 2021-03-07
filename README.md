@@ -66,8 +66,8 @@ $page = (new Client($config))->getPage('my-first-page');
 
 ## Features
 For more functionality see 
-- [Page](https://github.com/pammel/simple-wordpress-cms/blob/master/src/Page.php) 
 - [ConfigInterface](https://github.com/pammel/simple-wordpress-cms/blob/master/src/ConfigInterface.php)
+- [PageInterface](https://github.com/pammel/simple-wordpress-cms/blob/master/src/PageInterface.php) 
 
 ## Caching
 It is highly recommended to cache the page object because parsing the WordPress page takes a few seconds. This is an example using Laravel:

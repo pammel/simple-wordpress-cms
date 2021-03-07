@@ -4,7 +4,7 @@ namespace pammel\SimpleWordpressCms;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-class Page
+class Page implements PageInterface
 {
     /**
      * @var Config
