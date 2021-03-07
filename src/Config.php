@@ -2,7 +2,7 @@
 
 namespace pammel\SimpleWordpressCms;
 
-class Config
+class Config implements ConfigInterface
 {
     /**
      * @var string
@@ -15,8 +15,6 @@ class Config
     private $projectUrl;
 
     /**
-     * If true, all Wordpress-URLs in headerHtml and bodyHtml are replaced by project-URL. Except images-URLs, these remain the same, because they are stored on the Wordpress server.
-     *
      * @var bool
      */
     private $autoConvertWordpressUrlIntoProjectUrl = true;
@@ -42,8 +40,6 @@ class Config
     private $cssFolderPublicUrl;
 
     /**
-     * default = [':root' => ''] because :root don't work in shadowRoot
-     *
      * @var array
      */
     private $cssPregReplace = ['/:root/' => ''];
@@ -63,7 +59,7 @@ class Config
      */
     private $htmlBodyTemplate = '    
         <div id="wpShadow"></div>
-        <div id="wpShadowContent">
+        <div id="wpShadowContent" style="display: none;">
             <%wpContent%>
         </div>
     
@@ -79,6 +75,12 @@ class Config
             el.setAttribute("type", "text/css");
             el.setAttribute("href", "<%cssMergedFile%>");
             shadow.shadowRoot.append(el);
+            
+            // avoid flickering
+            window.onload = function(){
+               shadowContent.style.display = "block";
+            }
+
         </script>
     ';
 
@@ -92,7 +94,7 @@ class Config
         return $this->wordpressUrl;
     }
 
-    public function setWordpressUrl(string $wordpressUrl): Config
+    public function setWordpressUrl(string $wordpressUrl): ConfigInterface
     {
         $this->wordpressUrl = $wordpressUrl;
         return $this;
@@ -103,7 +105,7 @@ class Config
         return $this->projectUrl;
     }
 
-    public function setProjectUrl(string $projectUrl): Config
+    public function setProjectUrl(string $projectUrl): ConfigInterface
     {
         $this->projectUrl = $projectUrl;
         return $this;
@@ -114,7 +116,7 @@ class Config
         return $this->autoConvertWordpressUrlIntoProjectUrl;
     }
 
-    public function setAutoConvertWordpressUrlIntoProjectUrl(bool $autoConvertWordpressUrlIntoProjectUrl): Config
+    public function setAutoConvertWordpressUrlIntoProjectUrl(bool $autoConvertWordpressUrlIntoProjectUrl): ConfigInterface
     {
         $this->autoConvertWordpressUrlIntoProjectUrl = $autoConvertWordpressUrlIntoProjectUrl;
         return $this;
@@ -125,7 +127,7 @@ class Config
         return $this->cssFilesAdditional;
     }
 
-    public function setCssFilesAdditional(array $cssFilesAdditional): Config
+    public function setCssFilesAdditional(array $cssFilesAdditional): ConfigInterface
     {
         $this->cssFilesAdditional = $cssFilesAdditional;
         return $this;
@@ -136,7 +138,7 @@ class Config
         return $this->cssMergedFilename;
     }
 
-    public function setCssMergedFilename(string $cssMergedFilename): Config
+    public function setCssMergedFilename(string $cssMergedFilename): ConfigInterface
     {
         $this->cssMergedFilename = $cssMergedFilename;
         return $this;
@@ -147,7 +149,7 @@ class Config
         return $this->cssFolderLocal;
     }
 
-    public function setCssFolderLocal(string $cssFolderLocal): Config
+    public function setCssFolderLocal(string $cssFolderLocal): ConfigInterface
     {
         $this->cssFolderLocal = $cssFolderLocal;
         return $this;
@@ -158,7 +160,7 @@ class Config
         return $this->cssFolderPublicUrl;
     }
 
-    public function setCssFolderPublicUrl(string $cssFolderPublicUrl): Config
+    public function setCssFolderPublicUrl(string $cssFolderPublicUrl): ConfigInterface
     {
         $this->cssFolderPublicUrl = $cssFolderPublicUrl;
         return $this;
@@ -169,7 +171,7 @@ class Config
         return $this->cssPregReplace;
     }
 
-    public function setCssPregReplace(array $cssPregReplace): Config
+    public function setCssPregReplace(array $cssPregReplace): ConfigInterface
     {
         $this->cssPregReplace = $cssPregReplace;
         return $this;
@@ -180,7 +182,7 @@ class Config
         return $this->htmlBodyPregReplace;
     }
 
-    public function setHtmlBodyPregReplace(array $htmlBodyPregReplace): Config
+    public function setHtmlBodyPregReplace(array $htmlBodyPregReplace): ConfigInterface
     {
         $this->htmlBodyPregReplace = $htmlBodyPregReplace;
         return $this;
@@ -191,7 +193,7 @@ class Config
         return $this->htmlHeadPregReplace;
     }
 
-    public function setHtmlHeadPregReplace(array $htmlHeadPregReplace): Config
+    public function setHtmlHeadPregReplace(array $htmlHeadPregReplace): ConfigInterface
     {
         $this->htmlHeadPregReplace = $htmlHeadPregReplace;
         return $this;
@@ -202,7 +204,7 @@ class Config
         return $this->htmlBodyTemplate;
     }
 
-    public function setHtmlBodyTemplate(string $htmlBodyTemplate): Config
+    public function setHtmlBodyTemplate(string $htmlBodyTemplate): ConfigInterface
     {
         $this->htmlBodyTemplate = $htmlBodyTemplate;
         return $this;
@@ -213,7 +215,7 @@ class Config
         return $this->htmlHeadSelector;
     }
 
-    public function setHtmlHeadSelector(string $htmlHeadSelector): Config
+    public function setHtmlHeadSelector(string $htmlHeadSelector): ConfigInterface
     {
         $this->htmlHeadSelector = $htmlHeadSelector;
         return $this;
