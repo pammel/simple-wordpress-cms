@@ -87,7 +87,7 @@ class Config implements ConfigInterface
     /**
      * @var string
      */
-    private $htmlHeadSelector = 'title, meta[name=description], meta[property^=og], meta[name^=twitter], script[class=yoast-schema-graph]';
+    private $htmlHeadSelector = 'title, link[rel=canonical], meta[name=description], meta[property^=og], meta[name^=twitter], script[class=yoast-schema-graph]';
 
     public function getWordpressUrl(): string
     {

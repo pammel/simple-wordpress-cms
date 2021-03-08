@@ -61,7 +61,9 @@ interface ConfigInterface
     public function setHtmlBodyTemplate(string $htmlBodyTemplate): ConfigInterface;
 
     /**
-     * default: 'title, meta[name=description], meta[property^=og], meta[name^=twitter], script[class=yoast-schema-graph]';
+     * had tags from wordpress page which are included if calling method PageInterface::getHtmlHead()
+     *
+     * default: 'title, link[rel=canonical], meta[name=description], meta[property^=og], meta[name^=twitter], script[class=yoast-schema-graph]';
      */
     public function setHtmlHeadSelector(string $htmlHeadSelector): ConfigInterface;
 }
