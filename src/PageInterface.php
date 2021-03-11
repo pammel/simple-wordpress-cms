@@ -5,6 +5,11 @@ namespace pammel\SimpleWordpressCms;
 interface PageInterface
 {
     /**
+     * @return Exception[]|null
+     */
+    public function getExceptions(): ?array;
+
+    /**
      * Preprocess all values. This is useful if you cache the Page object
      */
     public function preprocess(): Page;

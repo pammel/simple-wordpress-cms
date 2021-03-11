@@ -27,7 +27,7 @@ class Client
         }
         catch(\Throwable $e){
             $crawler = null;
-            $error[] = sprintf('%s error getting CSS-files<br>[%d] %s', self::NAME, $e->getCode(), $e->getMessage());
+            $error[] = new Exception($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
 
         try{
@@ -35,13 +35,13 @@ class Client
         }
         catch(\Throwable $e){
             $apiResult = null;
-            $error[] = sprintf('%s error getting content<br>[%d] %s', self::NAME, $e->getCode(), $e->getMessage());
+            $error[] = new Exception($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
 
         return (new Page($this->config))
            ->setCrawler($crawler)
            ->setApiResult($apiResult)
-           ->setError($error)
+           ->setExceptions($error)
            ;
     }
 }
