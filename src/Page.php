@@ -22,9 +22,9 @@ class Page implements PageInterface
     private $apiResult;
 
     /**
-     * @var ?Exception[]
+     * @var ?Error[]
      */
-    private $exceptions;
+    private $errors;
 
     /**
      * @var string
@@ -94,19 +94,19 @@ class Page implements PageInterface
     }
 
     /**
-     * @return ?Exception[]
+     * @return ?Error[]
      */
-    public function getExceptions(): ?array
+    public function getErrors(): ?array
     {
-        return $this->exceptions;
+        return $this->errors;
     }
 
     /**
-     * @param ?Exception[] $exceptions
+     * @param ?Error[] $errors
      */
-    public function setExceptions(?array $exceptions): Page
+    public function setErrors(?array $errors): Page
     {
-        $this->exceptions = $exceptions;
+        $this->errors = $errors;
         return $this;
     }
 
@@ -240,8 +240,8 @@ class Page implements PageInterface
             }
         }
 
-        if($this->exceptions){
-            return sprintf('<div class="swpcms-error">%s</div>%s', implode('<br>', $this->exceptions), $this->wpContent);
+        if($this->errors){
+            return sprintf('<div class="swpcms-error">%s</div>%s', $this->errors[0]->getMessage(), $this->wpContent);
         }
 
         return $this->wpContent;

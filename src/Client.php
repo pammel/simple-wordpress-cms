@@ -20,14 +20,18 @@ class Client
 
     public function getPage(string $slug): Page
     {
-        $exceptions = [];
+        $errors = [];
 
         try{
             $crawler = new Crawler(file_get_contents($this->config->getWordpressUrl() . '/' . $slug));
         }
         catch(\Throwable $e){
             $crawler = null;
-            $exceptions[] = new Exception($e->getMessage(), $e->getCode());
+            $errors[] = (new Error())
+                ->setType(Error::TYPE_CRAWLER)
+                ->setMessage($e->getMessage())
+                ->setCode($e->getCode())
+            ;
         }
 
         try{
@@ -35,13 +39,17 @@ class Client
         }
         catch(\Throwable $e){
             $apiResult = null;
-            $exceptions[] = new Exception($e->getMessage(), $e->getCode());
+            $errors[] = (new Error())
+               ->setType(Error::TYPE_API)
+               ->setMessage($e->getMessage())
+               ->setCode($e->getCode())
+            ;
         }
 
         return (new Page($this->config))
            ->setCrawler($crawler)
            ->setApiResult($apiResult)
-           ->setExceptions($exceptions)
+           ->setErrors($errors)
            ;
     }
 }
