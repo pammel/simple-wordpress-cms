@@ -59,7 +59,7 @@ class Config implements ConfigInterface
      */
     private $htmlBodyTemplate = '    
         <div id="wpShadow"></div>
-        <div id="wpShadowContent" style="display: none;">
+        <div id="wpShadowContent" style="visibility: hidden;">
             <%wpContent%>
         </div>
     
@@ -78,7 +78,7 @@ class Config implements ConfigInterface
             
             // avoid flickering
             window.onload = function(){
-               shadowContent.style.display = "block";
+               shadowContent.style.visibility = "visible";
             }
 
         </script>
