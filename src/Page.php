@@ -371,9 +371,11 @@ class Page implements PageInterface
         $projectUrl = $this->config->getProjectUrl();
         $preserveImgUrl = str_replace('://', '::////', $wordpressUrl);
 
+        $localPrefix = '(?:\/[a-z]{2})';
+
         return [
            '~'.$this->escapeRegexUrl($wordpressUrl).'(?=[\p{L}0-9\/\._-]{1,}\.(jpe?g|gif|png))~sim' => $preserveImgUrl,
-           '~'.$this->escapeRegexUrl($wordpressUrl).'(?=[\p{L}0-9\/\._-]{1,})~sim' => $projectUrl,
+           '~'.$this->escapeRegexUrl($wordpressUrl).$localPrefix.'(?=[\p{L}0-9\/\._-]{1,})~sim' => $projectUrl,
            '~'.$this->escapeRegexUrl($preserveImgUrl).'(?=[\p{L}0-9\/\._-]{1,}\.(jpe?g|gif|png))~sim' => $wordpressUrl,
         ];
     }
